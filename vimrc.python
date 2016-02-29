@@ -1,0 +1,197 @@
+" settings for python/django environment
+colorscheme colorsbox-stnight
+let g:airline_theme="raven"
+let g:airline_powerline_fonts = 1
+
+if !exists('g:airline_symbols')
+  let g:airline_symbols = {}
+endif
+let g:airline_symbols.space = "\ua0"
+
+" set line spacing in Terminal Fonts Dialog to 0.943
+set guifont=Andale\ Mono\ for\ Powerline:h14
+set background=dark
+
+" non-standard, but very quick moment between modes.
+map ; :
+imap jk <Esc>
+set noshowmode
+
+" need to set highlight colorcolumn now, or the default
+" red color from the .vimrc base file will display.
+" this is a muted black color
+highlight colorcolumn ctermbg=234 guibg=#1c1c1c
+
+" set textwidth to n and set colorcolumn from n and beyond (relative) 
+" to a lighter color, easier on the eyes.
+"
+set textwidth=80
+execute "set colorcolumn=" . join(map(range(2,259), '"+" . v:val'), ',')
+
+" vim-powerline symbols
+let g:airline_left_sep          = '⮀'
+let g:airline_left_alt_sep      = '⮁'
+let g:airline_right_sep         = '⮂'
+let g:airline_right_alt_sep     = '⮃'
+let g:airline_symbols.branch    = '⭠'
+let g:airline_symbols.readonly  = '⭤'
+let g:airline_symbols.linenr    = '⭡'
+
+" airline tomato config
+let g:airline_powerline_fonts = 1
+let g:tomato#interval = 20 * 60
+let g:tomato#rest_time = 5 * 60
+let g:tomato#remind = " \uf003 "
+let g:tomato#restinfo = " \ue1f1 "
+let g:tomato#show_clock = 1
+let g:tomato#show_count_down = 1
+
+" fix hiding double quotes in json files by default
+let g:vim_json_syntax_conceal = 0
+"set conceallevel=0
+
+" vertical line indentation
+let g:indentLine_color_term = 239
+let g:indentLine_color_gui = '#09AA08'
+let g:indentLine_char = '|'
+
+" set your tab preference for python
+autocmd FileType python set shiftwidth=4
+autocmd FileType python set tabstop=4
+autocmd FileType python set softtabstop=4
+
+" YouCompleteMe settings for Python setup
+" Let YCM read tags from Ctags file
+let g:ycm_collect_identifiers_from_tags_files = 1
+" Default 1, just ensure
+let g:ycm_use_ultisnips_completer = 1
+" Completion for programming language's keyword
+let g:ycm_seed_identifiers_with_syntax = 1
+" Completion in comments
+let g:ycm_complete_in_comments = 1
+" Completion in string
+let g:ycm_complete_in_strings = 1
+
+" Ultisnips settings for Python, works well w/ YouCompleteMe
+" <c-k> List possible snippets based on current file
+let g:UltiSnipsExpandTrigger       = "<c-j>"
+let g:UltiSnipsJumpForwardTrigger  = "<c-j>"
+let g:UltiSnipsJumpBackwardTrigger = "<c-p>"
+let g:UltiSnipsListSnippets        = "<c-k>"
+
+" Syntastic settings for Python/Django
+let g:last_relative_dir = ''
+nnoremap \1 :call RelatedFile ("models.py")<cr>
+nnoremap \2 :call RelatedFile ("views.py")<cr>
+nnoremap \3 :call RelatedFile ("urls.py")<cr>
+nnoremap \4 :call RelatedFile ("admin.py")<cr>
+nnoremap \5 :call RelatedFile ("tests.py")<cr>
+nnoremap \6 :call RelatedFile ( "templates/" )<cr>
+nnoremap \7 :call RelatedFile ( "templatetags/" )<cr>
+nnoremap \8 :call RelatedFile ( "management/" )<cr>
+nnoremap \0 :e settings.py<cr>
+nnoremap \9 :e urls.py<cr>
+
+fun! RelatedFile(file)
+    #This is to check that the directory looks djangoish
+    if filereadable(expand("%:h"). '/models.py') || isdirectory(expand("%:h") . "/templatetags/")
+        exec "edit %:h/" . a:file
+        let g:last_relative_dir = expand("%:h") . '/'
+        return ''
+    endif
+    if g:last_relative_dir != ''
+        exec "edit " . g:last_relative_dir . a:file
+        return ''
+    endif
+    echo "Cant determine where relative file is : " . a:file
+    return ''
+endfun
+
+fun SetAppDir()
+    if filereadable(expand("%:h"). '/models.py') || isdirectory(expand("%:h") . "/templatetags/")
+        let g:last_relative_dir = expand("%:h") . '/'
+        return ''
+    endif
+endfun
+autocmd BufEnter *.py call SetAppDir()
+
+" surround.vim settings specific to Python/Django
+" moved to ~/.vim/ftplugin/htmldjango.vim
+" let b:surround_{char2nr("v")} = "{{ \r }}"
+" let b:surround_{char2nr("{")} = "{{ \r }}"
+" let b:surround_{char2nr("%")} = "{% \r %}"
+" let b:surround_{char2nr("b")} = "{% block \1block name: \1 %}\r{% endblock \1\1 %}"
+" let b:surround_{char2nr("i")} = "{% if \1condition: \1 %}\r{% endif %}"
+" let b:surround_{char2nr("w")} = "{% with \1with: \1 %}\r{% endwith %}"
+" let b:surround_{char2nr("f")} = "{% for \1for loop: \1 %}\r{% endfor %}"
+" let b:surround_{char2nr("c")} = "{% comment %}\r{% endcomment %}"
+" ---------------------------------------------------------------
+" type 'Sv' or 'S{' for a variable
+" type 'Sb' for a block
+" type 'Si' for an if statement
+" type 'Sw' for a with statement
+" type 'Sc' for a comment
+" type 'Sf' for a for statement
+" type 'S%' for other template tags
+
+" set hybrid line number mode
+set relativenumber
+set number
+
+" no byte-order marks (BOM)
+set nobomb
+
+" toggle between paste (ctrl-v) nopaste
+set pastetoggle=<F2>
+
+" search configs
+set incsearch
+set hlsearch
+nmap <leader>h :nohlsearch<cr>
+set ignorecase
+set smartcase
+
+" window splits configs i.e. focused windows expands
+set winwidth=84
+set winheight=5
+set winminheight=5
+set winheight=999
+
+" get URL from line
+function ExtractUrlFromCurrentLine()
+  return matchstr(getline("."), "http[^ ]*")
+endfunction
+
+function! OpenUrlOnCurrentLineInBrowser()
+  let url = ExtractUrlFromCurrentLine()
+  exec "!open" url
+endfunction
+
+" call function above to open a URL on a line
+" in your browser 
+map <leader>ra :call RunCurrentLineInTest()<cr>
+map <leader>rt :call RunCurrentLineInTest()<cr>
+map <leader>vs :VtrSendCommandToRunner<cr>
+map <leader>va :VtrAttachToPane<cr>
+
+" turn syntastic off for HTML
+" now must explicitly call it :SyntasticCheck
+let syntastic_mode_map = { 'passive_filetypes': ['html'] }
+
+" disable the trailing whitespace warning
+let g:airline#extensions#whitespace#enabled = 0
+
+let g:SimylFold_docstring_preview=1
+
+" experimenting (added 1/23/2016
+set cursorline    " highlight current line
+set wildmenu      " visual autocomplete for command menu
+set lazyredraw    " redraw only when needed
+set showmatch     " highlight matching [{()}]
+nnoremap j gj
+nnoremap k gk
+nnoremap B ^
+nnoremap E $
+nnoremap $ <nop>
+nnoremap ^ <nop>
+" nnoremap gV `[v`]

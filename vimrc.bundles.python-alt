@@ -1,0 +1,11 @@
+" for python IDE setup
+Plug 'tmhedberg/SimpylFold'
+Plug 'vim-scripts/indexpython.vim'
+Plug 'Valloric/YouCompleteMe'
+Plug 'nvie/vim-flake8'
+Plug 'pangloss/vim-javascript'
+Plug 'moll/vim-node'
+Plug 'othree/html5-syntax.vim'
+Plug 'othree/html5.vim'
+Plug 'groenewege/vim-less'
+Plug 'othree/javascript-libraries-syntax.vim'
